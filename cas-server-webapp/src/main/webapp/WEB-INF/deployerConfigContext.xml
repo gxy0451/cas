@@ -105,12 +105,9 @@
        | * org.jasig.cas.support.spnego.authentication.handler.support.JCIFSSpnegoAuthenticationHandler
        -->
     <bean id="primaryAuthenticationHandler"
-          class="org.jasig.cas.authentication.AcceptUsersAuthenticationHandler">
-        <property name="users">
-            <map>
-                <entry key="casuser" value="Mellon"/>
-            </map>
-        </property>
+          class="org.jasig.cas.authentication.CustomUsersAuthenticationHandler">
+        <property name="adHost" value="10.86.20.243"/>
+        <property name="port" value="389"/>
     </bean>
 
     <!-- Required for proxy ticket mechanism -->
