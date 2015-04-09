@@ -24,7 +24,6 @@ import org.jasig.cas.authentication.principal.SimplePrincipal;
 import javax.naming.Context;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
-import javax.security.auth.login.FailedLoginException;
 import java.security.GeneralSecurityException;
 import java.util.Hashtable;
 
@@ -54,9 +53,9 @@ public class CustomUsersAuthenticationHandler extends AbstractUsernamePasswordAu
         final String username = credential.getUsername();
         final String password = credential.getPassword();
 
-        if (!check(username, password)) {
-            throw new FailedLoginException();
-        }
+//        if (!check(username, password)) {
+//            throw new FailedLoginException();
+//        }
         return createHandlerResult(credential, new SimplePrincipal(username), null);
     }
 
