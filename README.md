@@ -185,22 +185,27 @@ bean：proxyAuthenticationHandler 增加属性p:requireSecure="false"
         
             <!-- Shiro's main business-tier object for web-enabled applications -->
             <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-                <property name="realm" ref="shiroDbRealm"/>
+                <!--单点登录配置 begin-->
+                <!--<property name="realm" ref="shiroDbRealm"/>-->
+                <!--若为单点登录则使用下方代码，独立验证则使用上方代码-->
+                <property name="realm" ref="shiroCasRealm"/>
+                <!--单点登录配置 end-->
                 <property name="cacheManager" ref="shiroEhcacheManager"/>
             </bean>
-            <!-- 項目自定义的Realm -->
+        
             <!--独立验证Realm-->
-            <!--<bean id="shiroDbRealm" class="com.infitecs.clover.core.security.shirorealm.ShiroDbRealm" depends-on="userDao,roleDao">-->
-                <!--<property name="userService" ref="userService"/>-->
-            <!--</bean>-->
+            <bean id="shiroDbRealm" class="com.infitecs.clover.core.security.shirorealm.ShiroDbRealm" depends-on="userDao,roleDao">
+                <property name="userService" ref="userService"/>
+            </bean>
             <!--单点登录验证Realm-->
-            <bean id="shiroDbRealm" class="com.infitecs.clover.core.security.shirorealm.ShiroCasRealm" depends-on="userDao,roleDao">
+            <bean id="shiroCasRealm" class="com.infitecs.clover.core.security.shirorealm.ShiroCasRealm" depends-on="userDao,roleDao">
                 <property name="userService" ref="userService"/>
                 <property name="casServerUrlPrefix" value="${sso.casServer}"/>
                 <property name="casService" value="${sso.clientServer}/cas"/>
             </bean>
         
             <!--单点登录配置 begin-->
+            <!--若为单点登录则去掉下方注释，独立验证则注释掉代码-->
             <bean id="casFilter" class="com.infitecs.clover.core.security.filter.CustomCasFilter">
                 <property name="failureUrl" value="/casFailure"/>
             </bean>
@@ -213,6 +218,8 @@ bean：proxyAuthenticationHandler 增加属性p:requireSecure="false"
             <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
                 <property name="securityManager" ref="securityManager"/>
                 <!--单点登录配置 begin-->
+                <!--<property name="loginUrl" value="/login"/>-->
+                <!--若为单点登录则使用下方代码，独立验证则使用上方代码-->
                 <property name="loginUrl" value="${sso.casServer}/login?service=${sso.clientServer}/cas"/>
                 <property name="filters">
                     <util:map>
@@ -223,8 +230,11 @@ bean：proxyAuthenticationHandler 增加属性p:requireSecure="false"
                 <!--单点登录配置 end-->
                 <property name="filterChainDefinitions">
                     <value>
+                        <!--单点登录配置 begin-->
+                        <!--若为单点登录则去掉下方注释，独立验证则注释掉代码-->
                         /casFailure = anon
                         /cas = cas
+                        <!--单点登录配置 end-->
                         /assets/** = anon
                         /css/** = anon
                         /img/** = anon
@@ -245,4 +255,5 @@ bean：proxyAuthenticationHandler 增加属性p:requireSecure="false"
             <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
             <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
         </beans>
-
+        
+        
