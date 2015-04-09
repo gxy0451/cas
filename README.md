@@ -245,3 +245,4 @@ bean：proxyAuthenticationHandler 增加属性p:requireSecure="false"
             <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
             <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
         </beans>
+
