@@ -9,8 +9,8 @@ github地址：<https://github.com/Jasig/cas>
 ##在4.0.1上做了如下调整项：
 
 ###1调整登录验证方式
-增加`org.jasig.cas.authentication.CustomUsersAuthenticationHandler`
-将cas-server-webapp\src\main\webapp\WEB-INF\deployerConfigContext.xml中的bean：primaryAuthenticationHandler调整为CustomUsersAuthenticationHandler
+- 增加`org.jasig.cas.authentication.CustomUsersAuthenticationHandler`
+- 将cas-server-webapp\src\main\webapp\WEB-INF\deployerConfigContext.xml中的bean：primaryAuthenticationHandler调整为CustomUsersAuthenticationHandler
 
 ###2去掉cas必须为https限制
 - 将`cas-server-webapp\src\main\webapp\WEB-INF\spring-configuration\ticketGrantingTicketCookieGenerator.xml`中
@@ -21,7 +21,12 @@ bean：warnCookieGenerator 的cookieSecure属性改为false
 bean：proxyAuthenticationHandler 增加属性p:requireSecure="false"
 
 ###3开启注销时的自动跳转（否则注销会停留在cas的成功页）
-调整`cas-server-webapp\src\main\webapp\WEB-INF\cas.properties`中cas.logout.followServiceRedirects选项为true
+- 调整`cas-server-webapp\src\main\webapp\WEB-INF\cas.properties`中cas.logout.followServiceRedirects选项为true
+
+###4调整登录页面
+- 将cas-server-webapp\src\main\webapp\WEB-INF\cas.properties中的cas.viewResolver.basename改为custom_views
+- 在cas-server-webapp\src\main\resources下增加custom-views.properties
+- 在cas-server-webapp\src\main\webapp\WEB-INF\view\jsp\下增加custom页面
 
 ##编译war
 本项目中的cas-server-webapp模块即可生成最终的war。去掉最外层pom中的checkstyle插件和license插件，
