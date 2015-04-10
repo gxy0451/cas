@@ -8,11 +8,11 @@ github地址：<https://github.com/Jasig/cas>
 
 ##在4.0.1上做了如下调整项：
 
-###1调整登录验证方式
+###1 调整登录验证方式
 - 增加`org.jasig.cas.authentication.CustomUsersAuthenticationHandler`
 - 将cas-server-webapp\src\main\webapp\WEB-INF\deployerConfigContext.xml中的bean：primaryAuthenticationHandler调整为CustomUsersAuthenticationHandler
 
-###2去掉cas必须为https限制
+###2 去掉cas必须为https限制
 - 将`cas-server-webapp\src\main\webapp\WEB-INF\spring-configuration\ticketGrantingTicketCookieGenerator.xml`中
 bean：ticketGrantingTicketCookieGenerator 的cookieSecure属性改为false
 - 将`cas-server-webapp\src\main\webapp\WEB-INF\spring-configuration\warnCookieGenerator.xml`中
@@ -20,13 +20,14 @@ bean：warnCookieGenerator 的cookieSecure属性改为false
 - 在`cas-server-webapp\src\main\webapp\WEB-INF\deployerConfigContext.xml`中
 bean：proxyAuthenticationHandler 增加属性p:requireSecure="false"
 
-###3开启注销时的自动跳转（否则注销会停留在cas的成功页）
+###3 开启注销时的自动跳转（否则注销会停留在cas的成功页）
 - 调整`cas-server-webapp\src\main\webapp\WEB-INF\cas.properties`中cas.logout.followServiceRedirects选项为true
 
-###4调整登录页面
+###4 调整登录页面
 - 将cas-server-webapp\src\main\webapp\WEB-INF\cas.properties中的cas.viewResolver.basename改为custom_views
 - 在cas-server-webapp\src\main\resources下增加custom-views.properties
 - 在cas-server-webapp\src\main\webapp\WEB-INF\view\jsp\下增加custom页面
+- 在cas-server-webapp\src\main\webapp\下增加custom资源文件夹
 
 ##编译war
 本项目中的cas-server-webapp模块即可生成最终的war。去掉最外层pom中的checkstyle插件和license插件，
@@ -34,7 +35,7 @@ bean：proxyAuthenticationHandler 增加属性p:requireSecure="false"
 
 ##客户端使用(以clover工程为例)
 
-###1增加`com.infitecs.clover.core.security.shirorealm.ShiroCasRealm.java`
+###1 增加`com.infitecs.clover.core.security.shirorealm.ShiroCasRealm.java`
         package com.infitecs.clover.core.security.shirorealm;
         
         import com.infitecs.clover.core.security.model.Role;
@@ -80,7 +81,7 @@ bean：proxyAuthenticationHandler 增加属性p:requireSecure="false"
         
         }
 
-###2增加`com.infitecs.clover.core.security.filter.CustomCasFilter`
+###2 增加`com.infitecs.clover.core.security.filter.CustomCasFilter`
         package com.infitecs.clover.core.security.filter;
         
         import com.infitecs.clover.core.develop.service.MenuService;
@@ -116,7 +117,7 @@ bean：proxyAuthenticationHandler 增加属性p:requireSecure="false"
             }
         }
 
-###3增加`clover-webapp\src\main\webapp\WEB-INF\jsp\core\error\casfailure.jsp`
+###3 增加`clover-webapp\src\main\webapp\WEB-INF\jsp\core\error\casfailure.jsp`
         <%@ page contentType="text/html;charset=UTF-8" language="java" %>
         <!DOCTYPE html>
         <!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
@@ -171,12 +172,12 @@ bean：proxyAuthenticationHandler 增加属性p:requireSecure="false"
         <%@include file="../includes/bottomscript.jsp"%>
         </body>
         </html>
-###4在`clover-webapp\src\main\resources\spring-mvc.xml`中增加：
+###4 在`clover-webapp\src\main\resources\spring-mvc.xml`中增加：
         <mvc:view-controller path="/casFailure" view-name="core/error/casfailure"/>
-###5在`clover-webapp\src\main\resources\application.properties`中增加：
+###5 在`clover-webapp\src\main\resources\application.properties`中增加：
         sso.casServer=http://localhost:8080/cas
         sso.clientServer=http://localhost:8083/clover
-###6将`clover-webapp\src\main\resources\conf\applicationContext-shiro.xml`调整为如下：
+###6 将`clover-webapp\src\main\resources\conf\applicationContext-shiro.xml`调整为如下：
         <?xml version="1.0" encoding="UTF-8"?>
         <beans xmlns="http://www.springframework.org/schema/beans"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

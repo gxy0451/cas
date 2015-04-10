@@ -64,9 +64,6 @@
                                 id="username" value="lewis.gao@infitecs.com" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="username" autocomplete="off" htmlEscape="true" />
                   </c:otherwise>
                 </c:choose>
-
-                <%--<input class="form-control placeholder-no-fix" type="text" autocomplete="off"--%>
-                       <%--placeholder="Username" name="username" id="username" value="admin"/>--%>
             </div>
         </div>
         <div class="form-group" style="margin-bottom: 20px;">
@@ -76,8 +73,6 @@
                 <i class="fa fa-lock"></i>
                 <form:password cssClass="form-control placeholder-no-fix" cssErrorClass="error" placeholder="Password" id="password"
                                value="qwe!@#QWE" size="25" tabindex="2" path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
-                <%--<input id="password" class="form-control placeholder-no-fix" type="password" autocomplete="off"--%>
-                       <%--placeholder="Password" name="password" value="admin"/>--%>
             </div>
         </div>
         <div class="form-actions" style="padding-bottom: 50px;">
@@ -97,32 +92,10 @@
 <!-- BEGIN CORE PLUGINS -->
 
 <script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
-<%--<script src="<c:url value="/js/bower_components/jquery-migrate/jquery-migrate.min.js"/>" type="text/javascript"></script>--%>
-<!-- IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
-<%--<script src="<c:url value="/js/bower_components/jquery-ui/ui/minified/jquery-ui.min.js"/>" type="text/javascript"></script>--%>
 <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-<%--<script src="<c:url value="/js/bower_components/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js"/>" type="text/javascript"></script>--%>
-<%--<script src="<c:url value="/js/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"/>" type="text/javascript"></script>--%>
-<%--<script src="<c:url value="/js/global/plugins/jquery.blockui.min.js"/>" type="text/javascript"></script>--%>
-<%--<script src="<c:url value="/js/global/plugins/jquery.cokie.min.js"/>" type="text/javascript"></script>--%>
-<%--<script src="<c:url value="/js/global/plugins/uniform/jquery.uniform.min.js"/>" type="text/javascript"></script>--%>
-<%--<script src="<c:url value="/js/bower_components/bootstrap-switch/dist/js/bootstrap-switch.min.js"/>" type="text/javascript"></script>--%>
-<%--<script src="<c:url value="/js/bower_components/toastr/toastr.min.js"/>" type="text/javascript"></script>--%>
 <script src="<c:url value="/custom/js/jquery-validation/dist/jquery.validate.min.js"/>" type="text/javascript"></script>
-<%--<script src="<c:url value="/js/bower_components/select2/select2.min.js"/>" type="text/javascript"></script>--%>
-<!-- END CORE PLUGINS -->
-<!-- BEGIN PAGE LEVEL SCRIPTS -->
 <script src="<c:url value="/custom/js/metronic.js"/>" type="text/javascript"></script>
 <script src="<c:url value="/custom/assets/admin/layout/scripts/layout.js"/>" type="text/javascript"></script>
-<!-- END PAGE LEVEL SCRIPTS -->
-<%--<script src="<c:url value="/js/global/scripts/global.js"/>" type="text/javascript"></script>--%>
-<%--<script src="<c:url value="/js/global/scripts/util.js"/>" type="text/javascript"></script>--%>
-<%--<script src="<c:url value="/js/global/scripts/toast.js"/>"></script>--%>
-<%--<script type="text/javascript" src="<c:url value="/js/bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js"/>"></script>--%>
-<%--<script src="<c:url value="/js/global/plugins/autoComplete/autoComplete.js"/>"></script>--%>
-<%--js i18n--%>
-
-<!-- END JAVASCRIPTS -->
 <script src="<c:url value="/custom/js/jquery-backstretch/jquery.backstretch.min.js"/>" type="text/javascript"></script>
 <script src="<c:url value="/custom/js/login.js"/>" type="text/javascript"></script>
 <spring:theme code="cas.javascript.file" var="casJavascriptFile" text="" />
