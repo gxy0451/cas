@@ -1,152 +1,157 @@
-<%--
+<%--@elvariable id="message" type="java.lang.String"--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-    Licensed to Jasig under one or more contributor license
-    agreements. See the NOTICE file distributed with this work
-    for additional information regarding copyright ownership.
-    Jasig licenses this file to you under the Apache License,
-    Version 2.0 (the "License"); you may not use this file
-    except in compliance with the License.  You may obtain a
-    copy of the License at the following location:
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
-
---%>
-<jsp:directive.include file="includes/top.jsp" />
-
-<c:if test="${not pageContext.request.secure}">
-  <div id="msg" class="errors">
-    <h2>Non-secure Connection</h2>
-    <p>You are currently accessing CAS over a non-secure connection.  Single Sign On WILL NOT WORK.  In order to have single sign on work, you MUST log in over HTTPS.</p>
-  </div>
-</c:if>
-
-<div class="box" id="login">
-  <form:form method="post" id="fm1" commandName="${commandName}" htmlEscape="true">
-
-    <form:errors path="*" id="msg" cssClass="errors" element="div" htmlEscape="false" />
-  
-    <h2><spring:message code="screen.welcome.instructions" /></h2>
-  
-    <section class="row">
-      <label for="username"><spring:message code="screen.welcome.label.netid" /></label>
-      <c:choose>
-        <c:when test="${not empty sessionScope.openIdLocalId}">
-          <strong>${sessionScope.openIdLocalId}</strong>
-          <input type="hidden" id="username" name="username" value="${sessionScope.openIdLocalId}" />
-        </c:when>
-        <c:otherwise>
-          <spring:message code="screen.welcome.label.netid.accesskey" var="userNameAccessKey" />
-          <form:input cssClass="required" cssErrorClass="error" id="username" value="lewis.gao@infitecs.com" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="username" autocomplete="off" htmlEscape="true" />
-        </c:otherwise>
-      </c:choose>
-    </section>
-    
-    <section class="row">
-      <label for="password"><spring:message code="screen.welcome.label.password" /></label>
-      <%--
-      NOTE: Certain browsers will offer the option of caching passwords for a user.  There is a non-standard attribute,
-      "autocomplete" that when set to "off" will tell certain browsers not to prompt to cache credentials.  For more
-      information, see the following web page:
-      http://www.technofundo.com/tech/web/ie_autocomplete.html
-      --%>
-      <spring:message code="screen.welcome.label.password.accesskey" var="passwordAccessKey" />
-      <form:password cssClass="required" cssErrorClass="error" id="password" value="qwe!@#QWE" size="25" tabindex="2" path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
-    </section>
-    
-    <section class="row check">
-      <input id="warn" name="warn" value="true" tabindex="3" accesskey="<spring:message code="screen.welcome.label.warn.accesskey" />" type="checkbox" />
-      <label for="warn"><spring:message code="screen.welcome.label.warn" /></label>
-    </section>
-    
-    <section class="row btn-row">
-      <input type="hidden" name="lt" value="${loginTicket}" />
-      <input type="hidden" name="execution" value="${flowExecutionKey}" />
-      <input type="hidden" name="_eventId" value="submit" />
-
-      <input class="btn-submit" name="submit" accesskey="l" value="<spring:message code="screen.welcome.button.login" />" tabindex="4" type="submit" />
-      <input class="btn-reset" name="reset" accesskey="c" value="<spring:message code="screen.welcome.button.clear" />" tabindex="5" type="reset" />
-    </section>
-  </form:form>
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+<!--<![endif]-->
+<head>
+    <title>InfiTecs</title>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <link href="http://libs.baidu.com/fontawesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+    <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<c:url value="/custom/assets/global/css/components.css"/>" rel="stylesheet" type="text/css"/>
+    <link href="<c:url value="/custom/assets/admin/layout/css/layout.css"/>" rel="stylesheet" type="text/css"/>
+    <%--<link rel="shortcut icon" href="favicon.ico"/>--%>
+    <link href="<c:url value="/custom/assets/admin/pages/css/login-soft.css"/>" rel="stylesheet" type="text/css"/>
+</head>
+<body class="login">
+<div class="logo">
+    <a href="<c:url value="/login"/>">
+        <img src="<c:url value="/custom/img/logo-big.png"/>" alt="" style="height:50px"/>
+    </a>
 </div>
-  
-<div id="sidebar">
-  <div class="sidebar-content">
-    <p><spring:message code="screen.welcome.security" /></p>
-    
-    <div id="list-languages">
-      <%final String queryString = request.getQueryString() == null ? "" : request.getQueryString().replaceAll("&locale=([A-Za-z][A-Za-z]_)?[A-Za-z][A-Za-z]|^locale=([A-Za-z][A-Za-z]_)?[A-Za-z][A-Za-z]", "");%>
-      <c:set var='query' value='<%=queryString%>' />
-      <c:set var="xquery" value="${fn:escapeXml(query)}" />
-      
-      <h3>Languages:</h3>
-      
-      <c:choose>
-        <c:when test="${not empty requestScope['isMobile'] and not empty mobileCss}">
-          <form method="get" action="login?${xquery}">
-            <select name="locale">
-              <option value="en">English</option>
-              <option value="es">Spanish</option>
-              <option value="fr">French</option>
-              <option value="ru">Russian</option>
-              <option value="nl">Nederlands</option>
-              <option value="sv">Svenska</option>
-              <option value="it">Italiano</option>
-              <option value="ur">Urdu</option>
-              <option value="zh_CN">Chinese (Simplified)</option>
-              <option value="zh_TW">Chinese (Traditional)</option>
-              <option value="de">Deutsch</option>
-              <option value="ja">Japanese</option>
-              <option value="hr">Croatian</option>
-              <option value="cs">Czech</option>
-              <option value="sl">Slovenian</option>
-              <option value="pl">Polish</option>
-              <option value="ca">Catalan</option>
-              <option value="mk">Macedonian</option>
-              <option value="fa">Farsi</option>
-              <option value="ar">Arabic</option>
-              <option value="pt_PT">Portuguese</option>
-              <option value="pt_BR">Portuguese (Brazil)</option>
-            </select>
-            <input type="submit" value="Switch">
-          </form>
-        </c:when>
-        <c:otherwise>
-          <c:set var="loginUrl" value="login?${xquery}${not empty xquery ? '&' : ''}locale=" />
-          <ul>
-            <li class="first"><a href="${loginUrl}en">English</a></li>
-            <li><a href="${loginUrl}es">Spanish</a></li>
-            <li><a href="${loginUrl}fr">French</a></li>
-            <li><a href="${loginUrl}ru">Russian</a></li>
-            <li><a href="${loginUrl}nl">Nederlands</a></li>
-            <li><a href="${loginUrl}sv">Svenska</a></li>
-            <li><a href="${loginUrl}it">Italiano</a></li>
-            <li><a href="${loginUrl}ur">Urdu</a></li>
-            <li><a href="${loginUrl}zh_CN">Chinese (Simplified)</a></li>
-            <li><a href="${loginUrl}zh_TW">Chinese (Traditional)</a></li>
-            <li><a href="${loginUrl}de">Deutsch</a></li>
-            <li><a href="${loginUrl}ja">Japanese</a></li>
-            <li><a href="${loginUrl}hr">Croatian</a></li>
-            <li><a href="${loginUrl}cs">Czech</a></li>
-            <li><a href="${loginUrl}sl">Slovenian</a></li>
-            <li><a href="${loginUrl}ca">Catalan</a></li>
-            <li><a href="${loginUrl}mk">Macedonian</a></li>
-            <li><a href="${loginUrl}fa">Farsi</a></li>
-            <li><a href="${loginUrl}ar">Arabic</a></li>
-            <li><a href="${loginUrl}pt_PT">Portuguese</a></li>
-            <li><a href="${loginUrl}pt_BR">Portuguese (Brazil)</a></li>
-            <li class="last"><a href="${loginUrl}pl">Polish</a></li>
-          </ul>
-        </c:otherwise>
-      </c:choose>
-    </div>
-  </div>
+<div class="menu-toggler sidebar-toggler">
 </div>
+<div class="content">
+    <!-- BEGIN LOGIN FORM -->
+    <form:form method="post" id="login-form" commandName="${commandName}" htmlEscape="true" cssClass="login-form">
 
-<jsp:directive.include file="includes/bottom.jsp" />
+        <input type="hidden" name="locale" value="en"/>
+
+        <h3 class="form-title">Login to your account</h3>
+
+        <form:errors path="*" id="msg" cssClass="alert alert-danger" element="div" htmlEscape="false" />
+
+        <div class="alert alert-danger display-hide">
+            <button class="close" data-close="alert"></button>
+            <span>Enter any username and password.</span>
+        </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label class="control-label visible-ie8 visible-ie9">Username</label>
+
+            <div class="input-icon">
+                <i class="fa fa-user"></i>
+                <c:choose>
+                  <c:when test="${not empty sessionScope.openIdLocalId}">
+                    <strong>${sessionScope.openIdLocalId}</strong>
+                    <input type="hidden" id="username" name="username" value="${sessionScope.openIdLocalId}" />
+                  </c:when>
+                  <c:otherwise>
+                    <spring:message code="screen.welcome.label.netid.accesskey" var="userNameAccessKey" />
+                    <form:input cssClass="form-control placeholder-no-fix" cssErrorClass="error" placeholder="Username"
+                                id="username" value="lewis.gao@infitecs.com" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="username" autocomplete="off" htmlEscape="true" />
+                  </c:otherwise>
+                </c:choose>
+
+                <%--<input class="form-control placeholder-no-fix" type="text" autocomplete="off"--%>
+                       <%--placeholder="Username" name="username" id="username" value="admin"/>--%>
+            </div>
+        </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label class="control-label visible-ie8 visible-ie9">Password</label>
+
+            <div class="input-icon">
+                <i class="fa fa-lock"></i>
+                <form:password cssClass="form-control placeholder-no-fix" cssErrorClass="error" placeholder="Password" id="password"
+                               value="qwe!@#QWE" size="25" tabindex="2" path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
+                <%--<input id="password" class="form-control placeholder-no-fix" type="password" autocomplete="off"--%>
+                       <%--placeholder="Password" name="password" value="admin"/>--%>
+            </div>
+        </div>
+        <div class="form-actions" style="padding-bottom: 50px;">
+            <button type="button" id="loginBtn" class="btn blue pull-right">Login <i
+                    class="m-icon-swapright m-icon-white"></i>
+            </button>
+        </div>
+        <input type="hidden" name="lt" value="${loginTicket}" />
+        <input type="hidden" name="execution" value="${flowExecutionKey}" />
+        <input type="hidden" name="_eventId" value="submit" />
+    </form:form>
+    <!-- END LOGIN FORM -->
+</div>
+<div class="copyright">
+    Copyright @ 2014-2015 InfiTecs Technology Co., Ltd
+</div>
+<!-- BEGIN CORE PLUGINS -->
+
+<script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
+<%--<script src="<c:url value="/js/bower_components/jquery-migrate/jquery-migrate.min.js"/>" type="text/javascript"></script>--%>
+<!-- IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
+<%--<script src="<c:url value="/js/bower_components/jquery-ui/ui/minified/jquery-ui.min.js"/>" type="text/javascript"></script>--%>
+<script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<%--<script src="<c:url value="/js/bower_components/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js"/>" type="text/javascript"></script>--%>
+<%--<script src="<c:url value="/js/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"/>" type="text/javascript"></script>--%>
+<%--<script src="<c:url value="/js/global/plugins/jquery.blockui.min.js"/>" type="text/javascript"></script>--%>
+<%--<script src="<c:url value="/js/global/plugins/jquery.cokie.min.js"/>" type="text/javascript"></script>--%>
+<%--<script src="<c:url value="/js/global/plugins/uniform/jquery.uniform.min.js"/>" type="text/javascript"></script>--%>
+<%--<script src="<c:url value="/js/bower_components/bootstrap-switch/dist/js/bootstrap-switch.min.js"/>" type="text/javascript"></script>--%>
+<%--<script src="<c:url value="/js/bower_components/toastr/toastr.min.js"/>" type="text/javascript"></script>--%>
+<script src="<c:url value="/custom/js/jquery-validation/dist/jquery.validate.min.js"/>" type="text/javascript"></script>
+<%--<script src="<c:url value="/js/bower_components/select2/select2.min.js"/>" type="text/javascript"></script>--%>
+<!-- END CORE PLUGINS -->
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<script src="<c:url value="/custom/js/metronic.js"/>" type="text/javascript"></script>
+<script src="<c:url value="/custom/assets/admin/layout/scripts/layout.js"/>" type="text/javascript"></script>
+<!-- END PAGE LEVEL SCRIPTS -->
+<%--<script src="<c:url value="/js/global/scripts/global.js"/>" type="text/javascript"></script>--%>
+<%--<script src="<c:url value="/js/global/scripts/util.js"/>" type="text/javascript"></script>--%>
+<%--<script src="<c:url value="/js/global/scripts/toast.js"/>"></script>--%>
+<%--<script type="text/javascript" src="<c:url value="/js/bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js"/>"></script>--%>
+<%--<script src="<c:url value="/js/global/plugins/autoComplete/autoComplete.js"/>"></script>--%>
+<%--js i18n--%>
+
+<!-- END JAVASCRIPTS -->
+<script src="<c:url value="/custom/js/jquery-backstretch/jquery.backstretch.min.js"/>" type="text/javascript"></script>
+<script src="<c:url value="/custom/js/login.js"/>" type="text/javascript"></script>
+<spring:theme code="cas.javascript.file" var="casJavascriptFile" text="" />
+<script type="text/javascript" src="<c:url value="${casJavascriptFile}" />"></script>
+
+<script>
+    $(function () {
+        $.validator.setDefaults({
+            errorElement: 'span', //default input error message container
+            errorClass: 'help-block help-block-error', // default input error message class
+            focusInvalid: true,
+            ignore: "",  // validate all fields including form hidden input
+            highlight: function (element) { // hightlight error inputs
+                $(element).closest('.form-group').addClass('has-error'); // set error class to the control group
+            },
+            unhighlight: function (element) { // revert the change done by hightlight
+                $(element).closest('.form-group').removeClass('has-error'); // set error class to the control group
+            },
+            success: function (label) {
+                label.closest('.form-group').removeClass('has-error'); // set success class to the control group
+            },
+            invalidHandler: function (event, validator) { //display error alert on form submit
+                toastr.error(i18n["tableWrong"]);
+            }
+        });
+        Metronic.init(); // init metronic core components
+        Layout.init(); // init current layout
+        Login.init();
+    })
+</script>
+</body>
+</html>
