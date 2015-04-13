@@ -92,10 +92,12 @@ bean：proxyAuthenticationHandler 增加属性p:requireSecure="false"
         import org.apache.shiro.cas.CasFilter;
         import org.apache.shiro.subject.Subject;
         import org.springframework.beans.factory.annotation.Autowired;
+        import org.springframework.web.servlet.i18n.SessionLocaleResolver;
         
         import javax.servlet.ServletRequest;
         import javax.servlet.ServletResponse;
         import javax.servlet.http.HttpServletRequest;
+        import java.util.Locale;
         
         /**
          * 自定义cas过滤器，在cas验证成功后获取username并对session数据及菜单进行初始化
@@ -111,8 +113,9 @@ bean：proxyAuthenticationHandler 增加属性p:requireSecure="false"
             @Override
             protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request, ServletResponse response) throws Exception {
                 User loginUser = userService.getUserByUsername(token.getPrincipal().toString());
-                HttpSessionUtil.saveUserToSession(loginUser, (HttpServletRequest)request);
-                menuService.updateMenuInHttpSession((HttpServletRequest)request);
+                HttpSessionUtil.saveUserToSession(loginUser, (HttpServletRequest) request);
+                menuService.updateMenuInHttpSession((HttpServletRequest) request);
+                ((HttpServletRequest) request).getSession().setAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, new Locale("en"));
                 return super.onLoginSuccess(token, subject, request, response);
             }
         }
@@ -177,7 +180,8 @@ bean：proxyAuthenticationHandler 增加属性p:requireSecure="false"
 ###5 在`clover-webapp\src\main\resources\application.properties`中增加：
         sso.casServer=http://localhost:8080/cas
         sso.clientServer=http://localhost:8083/clover
-###6 将`clover-webapp\src\main\resources\conf\applicationContext-shiro.xml`调整为如下：
+###6 增加`clover-webapp\src\main\resources\conf\applicationContext-shiro-cas.xml`
+        
         <?xml version="1.0" encoding="UTF-8"?>
         <beans xmlns="http://www.springframework.org/schema/beans"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -191,11 +195,7 @@ bean：proxyAuthenticationHandler 增加属性p:requireSecure="false"
         
             <!-- Shiro's main business-tier object for web-enabled applications -->
             <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-                <!--单点登录配置 begin-->
-                <!--<property name="realm" ref="shiroDbRealm"/>-->
-                <!--若为单点登录则使用下方代码，独立验证则使用上方代码-->
                 <property name="realm" ref="shiroCasRealm"/>
-                <!--单点登录配置 end-->
                 <property name="cacheManager" ref="shiroEhcacheManager"/>
             </bean>
         
@@ -210,22 +210,16 @@ bean：proxyAuthenticationHandler 增加属性p:requireSecure="false"
                 <property name="casService" value="${sso.clientServer}/cas"/>
             </bean>
         
-            <!--单点登录配置 begin-->
-            <!--若为单点登录则去掉下方注释，独立验证则注释掉代码-->
             <bean id="casFilter" class="com.infitecs.clover.core.security.filter.CustomCasFilter">
                 <property name="failureUrl" value="/casFailure"/>
             </bean>
             <bean id="logout" class="org.apache.shiro.web.filter.authc.LogoutFilter">
                 <property name="redirectUrl" value="${sso.casServer}/logout?service=${sso.clientServer}/"/>
             </bean>
-            <!--单点登录配置 end-->
         
             <!-- Shiro Filter -->
             <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
                 <property name="securityManager" ref="securityManager"/>
-                <!--单点登录配置 begin-->
-                <!--<property name="loginUrl" value="/login"/>-->
-                <!--若为单点登录则使用下方代码，独立验证则使用上方代码-->
                 <property name="loginUrl" value="${sso.casServer}/login?service=${sso.clientServer}/cas"/>
                 <property name="filters">
                     <util:map>
@@ -233,14 +227,10 @@ bean：proxyAuthenticationHandler 增加属性p:requireSecure="false"
                         <entry key="logout" value-ref="logout"/>
                     </util:map>
                 </property>
-                <!--单点登录配置 end-->
                 <property name="filterChainDefinitions">
                     <value>
-                        <!--单点登录配置 begin-->
-                        <!--若为单点登录则去掉下方注释，独立验证则注释掉代码-->
                         /casFailure = anon
                         /cas = cas
-                        <!--单点登录配置 end-->
                         /assets/** = anon
                         /css/** = anon
                         /img/** = anon
@@ -260,6 +250,6 @@ bean：proxyAuthenticationHandler 增加属性p:requireSecure="false"
         
             <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
             <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
-        </beans>
-        
-        
+        </beans>       
+
+###7 将`clover-webapp\src\main\resources\applicationContext-extend.xml`中的引用文件改成applicationContext-shiro-cas.xml
