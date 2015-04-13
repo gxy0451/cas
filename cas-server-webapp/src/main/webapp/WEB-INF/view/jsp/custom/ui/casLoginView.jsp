@@ -61,7 +61,7 @@
                   <c:otherwise>
                     <spring:message code="screen.welcome.label.netid.accesskey" var="userNameAccessKey" />
                     <form:input cssClass="form-control placeholder-no-fix" cssErrorClass="error" placeholder="Username"
-                                id="username" value="lewis.gao@infitecs.com" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="username" autocomplete="off" htmlEscape="true" />
+                                id="username" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="username" autocomplete="off" htmlEscape="true" />
                   </c:otherwise>
                 </c:choose>
             </div>
@@ -72,7 +72,7 @@
             <div class="input-icon">
                 <i class="fa fa-lock"></i>
                 <form:password cssClass="form-control placeholder-no-fix" cssErrorClass="error" placeholder="Password" id="password"
-                               value="qwe!@#QWE" size="25" tabindex="2" path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
+                               size="25" tabindex="2" path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
             </div>
         </div>
         <div class="form-actions" style="padding-bottom: 50px;">
