@@ -199,10 +199,6 @@ bean：proxyAuthenticationHandler 增加属性p:requireSecure="false"
                 <property name="cacheManager" ref="shiroEhcacheManager"/>
             </bean>
         
-            <!--独立验证Realm-->
-            <bean id="shiroDbRealm" class="com.infitecs.clover.core.security.shirorealm.ShiroDbRealm" depends-on="userDao,roleDao">
-                <property name="userService" ref="userService"/>
-            </bean>
             <!--单点登录验证Realm-->
             <bean id="shiroCasRealm" class="com.infitecs.clover.core.security.shirorealm.ShiroCasRealm" depends-on="userDao,roleDao">
                 <property name="userService" ref="userService"/>
